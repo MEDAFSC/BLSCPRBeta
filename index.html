@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>ปฏิบัติการกู้ชีพ | BLS Hero Academy</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@600;700;800&family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --olive:#3E4A2E; --olive2:#556B3A; --khaki:#C9BF9A; --sand:#F4EEDC; --paper:#FFFDF5;
+  --red:#D63B2F; --gold:#F5B921; --ink:#26301C; --sky:#2FA8AD; --ok:#2E8B57;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+body{font-family:'Sarabun',sans-serif;background:var(--sand);color:var(--ink);min-height:100vh;padding-bottom:84px;
+  background-image:repeating-linear-gradient(45deg,rgba(62,74,46,.035) 0 14px,transparent 14px 28px)}
+h1,h2,h3,.kanit{font-family:'Kanit',sans-serif}
+/* ===== HEADER ===== */
+header{background:linear-gradient(160deg,var(--olive),#2C3620);color:var(--sand);padding:16px 16px 10px;
+  border-bottom:4px solid var(--gold);text-align:center}
+.h-tag{font-size:11px;letter-spacing:3px;color:var(--khaki);text-transform:uppercase}
+header h1{font-size:22px;font-weight:800;letter-spacing:1px;line-height:1.2}
+header .sub{font-size:12px;color:var(--khaki)}
+/* ===== EMERGENCY BAR ===== */
+.emg{background:var(--red);color:#fff;display:flex;gap:10px;align-items:center;padding:8px 14px;font-size:13px}
+.emg b{font-family:'Kanit';font-size:18px;letter-spacing:1px}
+.emg .pulse{width:10px;height:10px;border-radius:50%;background:#fff;animation:pp 1s infinite}
+@keyframes pp{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.6);opacity:.5}}
+/* ===== NAV ===== */
+nav{position:fixed;bottom:0;left:0;right:0;background:var(--olive);display:flex;z-index:50;
+  border-top:3px solid var(--gold);box-shadow:0 -4px 14px rgba(0,0,0,.25)}
+nav button{flex:1;background:none;border:none;color:var(--khaki);padding:9px 2px 10px;font-family:'Kanit';font-size:12.5px;cursor:pointer}
+nav button .ic{display:block;font-size:20px;margin-bottom:1px}
+nav button.on{color:#fff;background:rgba(255,255,255,.08);box-shadow:inset 0 3px 0 var(--gold)}
+/* ===== LAYOUT ===== */
+main{max-width:560px;margin:0 auto;padding:14px 14px 20px}
+.page{display:none}.page.on{display:block;animation:fin .25s}
+@keyframes fin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.card{background:var(--paper);border:2px solid var(--olive);border-radius:14px;padding:14px 16px;margin-bottom:12px;
+  box-shadow:4px 4px 0 rgba(62,74,46,.22)}
+.card h2{font-size:17px;color:var(--olive);display:flex;align-items:center;gap:8px}
+.badge{display:inline-block;background:var(--olive);color:var(--sand);font-family:'Kanit';font-size:11px;
+  padding:2px 10px;border-radius:4px;letter-spacing:1px}
+.badge.red{background:var(--red)} .badge.gold{background:var(--gold);color:var(--ink)}
+ul.tips{margin:8px 0 0 18px;font-size:14.5px;line-height:1.75}
+.big{font-family:'Kanit';font-weight:800;color:var(--red)}
+/* speech bubble + mascot */
+.mascot{display:flex;gap:10px;align-items:flex-end;margin-bottom:12px}
+.bubble{background:#fff;border:2px solid var(--olive);border-radius:14px 14px 14px 3px;padding:10px 13px;
+  font-size:14px;flex:1;box-shadow:3px 3px 0 rgba(62,74,46,.18)}
+.bubble b{color:var(--red)}
+/* ===== BUTTONS ===== */
+.btn{display:block;width:100%;border:none;border-radius:12px;padding:14px;font-family:'Kanit';font-size:17px;
+  font-weight:700;cursor:pointer;background:var(--olive2);color:#fff;box-shadow:0 4px 0 #2C3620;transition:.08s}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #2C3620}
+.btn.red{background:var(--red);box-shadow:0 4px 0 #8E1F17}.btn.red:active{box-shadow:0 1px 0 #8E1F17}
+.btn.gold{background:var(--gold);color:var(--ink);box-shadow:0 4px 0 #B78A0E}.btn.gold:active{box-shadow:0 1px 0 #B78A0E}
+.btn.ghost{background:#fff;color:var(--olive);border:2px solid var(--olive);box-shadow:0 4px 0 rgba(62,74,46,.35)}
+.btn+.btn{margin-top:10px}
+.btnrow{display:flex;gap:8px;margin-top:10px}
+.btnrow .btn{flex:1;margin:0;font-size:14px;padding:11px 4px}
+/* ===== STEP SEQUENCE ===== */
+.step{display:flex;gap:12px;margin:10px 0}
+.step .no{min-width:38px;height:38px;border-radius:50%;background:var(--olive);color:var(--gold);
+  font-family:'Kanit';font-weight:800;font-size:17px;display:flex;align-items:center;justify-content:center;border:2px solid var(--gold)}
+.step .tx{font-size:14.5px;line-height:1.55;padding-top:4px}
+.step .tx b{font-family:'Kanit';color:var(--olive)}
+/* ===== TAP TRAINER ===== */
+.gauge{font-family:'Kanit';text-align:center;margin:8px 0}
+.gauge .num{font-size:54px;font-weight:800;color:var(--olive);line-height:1}
+.gauge .lab{font-size:13px;color:#777}
+#tapBtn{width:190px;height:190px;border-radius:50%;margin:14px auto;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;background:radial-gradient(circle at 35% 30%,#E85A4F,var(--red));
+  color:#fff;border:6px solid #fff;box-shadow:0 8px 0 #8E1F17,0 12px 22px rgba(0,0,0,.3);
+  font-family:'Kanit';font-size:24px;font-weight:800;cursor:pointer;user-select:none;transition:.05s}
+#tapBtn:active{transform:translateY(6px);box-shadow:0 2px 0 #8E1F17}
+#tapBtn small{font-size:12px;font-weight:400;opacity:.9}
+.rateband{height:14px;border-radius:8px;margin:6px 0 2px;position:relative;
+  background:linear-gradient(90deg,#7FB3D5 0 33%,#7DCE82 33% 66%,#E88D67 66%)}
+.rateband .pin{position:absolute;top:-6px;width:4px;height:26px;background:var(--ink);border-radius:2px;transition:left .2s}
+.bandlab{display:flex;justify-content:space-between;font-size:11px;color:#666;margin-bottom:6px}
+.verdict{text-align:center;font-family:'Kanit';font-size:17px;min-height:26px}
+/* ===== QUIZ ===== */
+.qhead{display:flex;justify-content:space-between;align-items:center;font-family:'Kanit';margin-bottom:8px}
+.qbar{height:10px;background:#DDD6BE;border-radius:6px;overflow:hidden;margin-bottom:12px}
+.qbar i{display:block;height:100%;background:linear-gradient(90deg,var(--olive2),var(--gold));transition:width .3s}
+.qtext{font-size:16.5px;font-weight:700;line-height:1.55;margin-bottom:12px}
+.choice{display:block;width:100%;text-align:left;background:#fff;border:2px solid var(--olive);border-radius:12px;
+  padding:12px 14px;font-family:'Sarabun';font-size:15px;margin-bottom:9px;cursor:pointer;transition:.1s;
+  box-shadow:3px 3px 0 rgba(62,74,46,.15)}
+.choice:active{transform:translate(2px,2px);box-shadow:none}
+.choice.ok{background:#E4F5E7;border-color:var(--ok);box-shadow:3px 3px 0 rgba(46,139,87,.3)}
+.choice.bad{background:#FBE4E1;border-color:var(--red)}
+.choice:disabled{cursor:default;opacity:.92}
+.fb{border-radius:12px;padding:10px 13px;font-size:14px;margin-top:4px;display:none;line-height:1.6}
+.fb.on{display:block;animation:fin .2s}
+.fb.good{background:#E4F5E7;border:2px dashed var(--ok)}
+.fb.badd{background:#FBE4E1;border:2px dashed var(--red)}
+.fb .kanit{font-size:16px}
+/* result */
+.result{text-align:center;padding:8px 0}
+.score-ring{width:150px;height:150px;border-radius:50%;margin:10px auto;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;background:conic-gradient(var(--gold) var(--pct,0%),#E3DCC2 0);position:relative}
+.score-ring::before{content:"";position:absolute;inset:12px;background:var(--paper);border-radius:50%}
+.score-ring b{position:relative;font-family:'Kanit';font-size:42px;color:var(--olive)}
+.score-ring span{position:relative;font-size:13px;color:#777}
+.rank{font-family:'Kanit';font-size:20px;color:var(--red);margin:4px 0}
+.rank small{display:block;font-size:13px;color:#666;font-family:'Sarabun'}
+/* ===== HISTORY ===== */
+table.hist{width:100%;border-collapse:collapse;font-size:13.5px}
+table.hist th{font-family:'Kanit';background:var(--olive);color:var(--sand);padding:7px 6px;font-weight:600;font-size:12.5px}
+table.hist td{padding:7px 6px;border-bottom:1px solid #E0D9BF;text-align:center}
+table.hist td.sc{font-family:'Kanit';font-weight:800;color:var(--olive)}
+.empty{color:#888;text-align:center;font-size:14px;padding:14px 0}
+.note{font-size:12px;color:#7A7460;margin-top:8px;line-height:1.6}
+.center{text-align:center}
+</style>
+</head>
+<body>
+
+<header>
+  <img id="unitLogo" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAB4AHgDASIAAhEBAxEB/8QAHAAAAgMBAQEBAAAAAAAAAAAAAAYEBQcCAwEI/8QAQhAAAQMCBQEECQEDCgcBAAAAAQIDBAURAAYSITFBEyJRYQcUIzJCUnGBkRUWgqEkJTNDRFNicnOiFzQ2sbLR4fD/xAAZAQEAAwEBAAAAAAAAAAAAAAAAAQMEAgX/xAAmEQEAAgIBAgUFAQAAAAAAAAAAAQIDESESMSJRcYHwEzJBkbHB/9oADAMBAAIRAxEAPwDf8GDBgDHlIksRI7j8l5tllsaluOKCUpHiSdhisrWYGqUtmIwwubU5APq8JkgKXblSidkIHVR2+psMZzMqc2t1owobDOZa6wrvgkppVLPn/eLHibq8NPGAcJWc3JDC3qLBDkRPvVKe56rEA8QojUv90WPjhOezsam+plit1itvXsY+WYHZspPgXl3P3ChhhjejiNLdTUs6VNyvTEd7s3z2cRnyQ0Nrear4spmc8t0KDITEUh1EOK9JLEFsEaGlhDgFrJukncX8TgEz9GrtSIWPR8lYPDlcri3VH6pBVj1/Y/MWn/ojI1vl7Ry/50Ys8x+lB2izZcdqkBaYyI75eW/3VsOuBAWLDz/iPPHUjPdbiZhfgvU+H6szUxALgUu67x1PhQPS1gDsb6ultwpDR65TFajkBKOmuiV1bS/sglN8fWc7Kpb6GZFaq9Gd4EfM0DW0o+AeRY/cqOLnIWYDmqvPTn4yA8mnRpCimSXENKeB7iUnZB0oF9779LnDBU815eRXBlyod951TTZQ6zqa1O30JN9u9YgdMBHjZ1MeOh6tQgzEV7tSguetRFDxKkjUj95NvPDVHkMymG347zbzLg1IcbUFJUPEEbHCE/6PYTL7s/JNVXQ5urvtR1dpFcPg4ydhx0tihhVOfQaymFLjs5crTyu4i5NKqiuuk/1Th8RY+IVxgNfwYqKLX2asXY7jLkOox7CTCetrbJ4II2Ug9FDY+RuBb4AwYMGAMU2YK2qlssx4jIk1OYotxI17BSgLlSj0QkbqP2G5AxZTJbECE/MlOpajsIU444rhKQLk/jGUVCTVK5VW6dEK49dr7Wt5z4qVTAdk+Ti+T/iP+EYDuJEm5qqM2lUie56rr013MCBpclLHMeP8qE8bbAeJJJua/LomRqXCp1HeXEfp95iKbFISZbSB7RKioWUdJKudR033xeS6dOy1lVinZQpsVxUZIShh9woBSASdwR3ievib4pcsZafq9JadzI2t+MHmp0FmY2W5cN0ElSFKFrpCr6fEHfAedco9UzapkQam6/RalCc7RajoRGdBC2HUAWVqCgApJO4++PNug5ayqS9mCcy7UJDrrqY7LZ7xdbSh1LbQupSVaAT5+GLlVTn5jeXAy0tEOmNKLb1W7MKBI5RHTwog7FZ7oPGo8XFHy3S6EFuRWCqS5u9LfUXHnT4qWdz9OPLAULM2Y+EmkZIWEBpLCXqktuPdtJuE27y9IO9iBiaF51V3vUcvoN76TJeUfzoxfCpQlPKaEpkuJtdOsbX4xJuLXvtiNxIVG52aKcVFzK0F9KjdRp00BR89LiU3P3xVpeyjUMxNSahHlUqsqkIkhqoJUz2rqGy22QTdC9IUbBJ5N7YaJGZqYxObgodVIlLUE9lHTrKdwLqI2AF/riwmQYlSiLizYzUmO4LKaeQFJP1BwiYnsM4i5ZqeQoc2sNPv1ERoHqzUeMlS3XiVlSnlJUSCvUU7DYDV44aTCYrmV4lKzg1BcmTGQXouoC67XOje903G464jLpdVyn7ehqeqNKTu5SnnNTjSfGOtW+392o2PQjjBOplNzpDZrFNlKDnZlrWLgkA3KFJPuLSrqRdJvte1pClMiTsqVOFTapPc9WC9FDr7m646j/ZpPzIVa2/PkQCNEoFaNWjutSWfValEX2UyKVX7NfIIPxIUN0q6jzBApac45nKk1Ki5kpzZToCH0oQUpSolQKL3I1JKQoEE7KSdjthRp0qp5erDsCWXJFZoTOpDnxVWlk/xcb5HmCPiOA2DBjyiyWZkVmTHdS6w8gONuJOykkXBH1GDAKedZzDkiLS5KwmA02qpVInj1dmxCD/mXp+oSoYj+jWnvvU6XmupItU6856yQrlpjhpseQTv98K+bFLrb0uC2VBdfrTVISQd0xY+7pHlq7T8415ppDLKGm0hLaEhKUjgAbAYDvClW3nsyVlWWYbq2oTKUrq0htVlaVe6wk9FLG6jyE+ahi8rtVaodCm1N1OpMZorCBys9EjzJsPviJlSkOUihtplELqEhRkzXPnfXur7D3R5JGAtmGGIMRthhttlhlAShCBpShIGwA6ADFJUKgHkLcWrREbSVEn4gBck+XlixqyyI6Wwbazv5gYXqnAFTpcqCXVNB9st60GxTf8A/f8AfGXPefth3WONvkBpaWXVrSQqQsvFF76AQLD8AYXs7VyVEoRp8OS0ELWO3AcBcSjkAC/BI/GJzdBFQiNom1WpPoQA2uOXEtgKHKVaQCfzuMVmZMlR2svrm0lhaHYzh7VCVKXqbI32J6Gx/OMsdep6PJTnteaTuNR68qijLy0uhykVWW6zM1JdY7LUnslIBCSjSNtz+TjTsl1ldZyxClSHNUgpKXCdtRSbX++Mly7X6VSqXMblU1iXU3FhURbzWtBsLEK6gC1/O+PWm1Z5ean5U+Wr2LiVjskhKg2kjupSLcqUEgcWJuecThzdEVrHPHaP7Po5xbyT9TfHb3btyMKFcjuZXqLmZ6ehRiLI/V4yBstHHbpHzoHPzJHiBi/o1UTWKaiahpTSVlQCFqBIANt7Ej7YnqSlaClQCkkWIIuCMelE7WuWXG3mUOtLSttaQpKkm4UDuCPLCR6S6c+zTouaqa3ep0Fz1kAcuscOtnyKd/tiflDVSpVSyw4Topy0uQrncxXLlA/dUFo+iRhodbQ80ttxIUhaSlSTwQeRiQo5HnMIMmlRlhULQifTT0MV65CR/kXrT5ApwYUMnldEnRIC1HVRKu/RlkndUZ8a2SfooIAwYDvLLSpucMlIeF1R6NJqiv8AUfWBf/ccaJIzVRYtURTnp7SXzse93UK6JUrhKjvYHc2wjZXQXM+xUNOFtRyfGDawASklfIB28MLb9NlNCbSZNCXKqTrq7x7jXLBO73gUrtqKiSUkW50jAadm8euysv0rlEupIcdHQtspU6R9NSU4s6NmCDXVThCWVepyVRnL7XUnqPFJ6HrY4VJ6nsvT8rrq831h2HDmrdkFBO4QjwFyADa/JAueuMyotQqMKfCq7TnZPhopQuO6g9qElSil1oqCSkXWTbcDjAb7VmSuOl1Iv2ZuR5dcVaF6hsPxiTlfMDWZaI3NSG0uglt9ttesIWDYgHqOoPgcfZ0Axwp9m5b5Uj5fMf8ArGfNjmfFCylvwgOMgvtPNps4DZZ8UWOx8d7W8PzidCcLT+nVs73T1semIafx4jHtHbU5JaSD8YWfIDGfHMxaNOrdmLVaIY+ZKm32yFuImKK1ITo73ft3eANgbb+8PK/VFFRnMqgRYgffdc7RTiWlFThAAT3uAkKUVW2ud7gC2J9cbQ3naoNVJz1hJfeIQlvQLlPd36gFQNhfcXxpHo4pkim5cUHy9Z54upDvJ2AKrdL2v4fnFVMXXltG++/nu4tWPDbyX9ApiaNQYNOSE/ydlLZ0jkgbn/7iyx8UQlJJIAG5JxkmcPSFJmxTHo0l6EytZRraZK5DyCPeRcaUA9DfVuDYWOPViNODdOkMDO2XqpEdQ4zNakU9biFXCrDtE/hTax9zjyqPpJo9PqLrBQ85FjKWiXKSg2aUnmybXWB1KePPeyvlx2NNyxlvsWVssftA6hpvUe6hSXbgHkWBIPUEHHxzKWZoTz9JhMx3AtZVEkrSexQ0D3e0VyFpG1gO8SD8xwHlmMpjZtza7GUNMikQqw2ocamHfeH2SMGPOu0hihZhk05ha1oayfKClLO5Pa3+gFybAWA4GDASMrPGLnLJzjxsqVQX6cfNxhwXH8DjXNCdWrSNVrXtjHs0A0OaZ5vbL9fRPO3ESVsu3kFlY+2NhSoLQFJIKSLgjqMAsZqIi1nLNRI7jdQMZZPRLzakD/dowhZyyBTcuZck1WOpap/ahLakpGlLV1KCdJNthck3G/ltjTsz0lVcy5NgNr0PuI1ML+R1JCkK+ygMJeaUftf6Po1cQzrfip1vwnEdogLSoB1JRcd5JSoXvxqHXAI2Uq3Io0suoqCI93ELbiKcUtyZ3ggo07gE61qHW4vxe36DIBFjvj8tsVaUxUFrpgRTFv2SU0tsNIWoGxCQL3IIPJNrm3KsN2X/AElVilyEGe+5LjKWUusyCErRdQGyidtPevcnfbobBoddq8Wi1VuGlpz2oB1KUlKU3OwSSRc+XTFVJzXUmIzEiFFZYaeUtIccV2inFJGrSRYW232Bv0Jw+RnoNYgszGeyfYdRqQuwNwR/D6YrHMlUBztT+npSXU6FFDikm177WO32xmtitz0fPnsvrkpEcxuWaUOsGHmqrVxmnx3FqaSXUNOKKStYSTawVudB26HY42OE+qTDZfU0tlTiAotr5TfocQqTlyk0PUadDbZUtIStYJKlW33J5xUZxzvFys0llCA/PdSS21vpTYE3UQNuDYdf44sx0tXvLPXUR21zM/uf8L/pBrtXeFSptMsliOlDDqUFPbOOLT2g0pO5SEjcAXNz4HGcZCoFQzZDkKYkpjyKaAUpaKh2x1aSj3gkagixVv04NyYlezHUMx1FM+fGjTA0pSQmKnsHdO1gHE3UVcjkgauDa4efRa1JlZgk1Glw3qfAShDUpmXLMgG6SQlGwssGyr8aSNiTcWpXlKy2xQ6zlalNoJlXeqU5ZXqJUlvsx5AXdtt4decaThUy0f1nMNXzFzHJFPhK6KaaJ1rHkpwq+yBhqUoJSVKIAAuSemAyLNjhmZ0zZ2dyWKJGpoA+eQ9x+CMGOMrE16rJqJSSK5W3aiNv7JETpbv9V6MGAbM70yOuUxLlJ/m+cyqk1A/K26fZL/dcsL9O0OOfRzWnVZdeo9WdSip0FwwpZWbXSn+jc36KTY38jhuqMCPVKdIgy2w5HkNqbcQeqSLHGKZrplRjCVL7d4VKnsoi1js03VNg6rtSgnbUU6bKHkoXAwDlN9Jgi1VntKa9FpC1BCZU1JZU+oq0ktpPQXvvzva3JsJunKdeeqKgP0CrLAmH4Ysg2SHT4IWLJUehAPU4VK1R4cOgQ6pTm01ZyWwkLr8xYW3DasBqbaB2JB2SgDg3ww5czdRJsA0Jz1uQhuLZtUtjvTmtJuoI50qCVaQQNQGwIGAyXOGW5uUaz6v2K3qar/llkkILY+C42SRcDcKNxsQOY0LL65NCflwJsKSIwK34jKVh9hVt7tkgBCrJuoAgFIVxe2mU+qMsxXID1MkVPK3ZJcSxIQl2TCQemgEqcaTtYjvJvbvAbeb3oqy3XYzFRy1VC0xy2G1B1q3VIV76L8Gx+2AzjLtcqFFmuymq4aa2tS1KLzZWgKAulooHvE9LkX51Ha+p5d9KsA0RxyvuqYmtOEBFk3cSdx7psCAQCTYbYWYHonqMmFMQHDHkR3+zbTJBU261a5Qkj4RchJtax4BBxTf8L87i7BgMLZQ3YEzEi5B2A5JFrbHqOemAv5vpMzJWaXV6pl/1aPCgvNtLS6kFxKF2SlYJ2Pe1XuLbbHY4zuXLqVenF+TLQJEncyXVgJHdBUSo7DSgXtfwt4YZoXo2zQ8+uP8ApDzKXCdbj7raGzcg3VouSB0H482dHoaecrjJnVNbkHsUuOutkJUl0KJKWwfdBv72556m+AzzLFAnZjr6afGbT7Sy3VdkNDLO+pShe3eJ2T5Dbm21VlxqlQWso0J/spkhF5Epx3vR2j3S4tZ/rFnuo8TvwnHyDJhw2l0LIUJh1wK0yJ6rqjsK4JWvl1z/AAA/UpGJE+l5cy9QXI9YS/UFy1l+S4WluyJSwO8shAvYDaw2SnbAVwziinU7L8DL8SI2t2MlSKfLd7LU2O4EIc416kkcEHxFxfjNecH6pk5mBTYsiJWq1IXTGo7wGtlQJS8u4JBCQD3gbbjCkuFBnSD+oymmmix62zMLvbwZUQb2KdiwpISdJRbTYC5PMqiQ5FXqDMyIyuE9PYVEozG5VT6cD7SUq/8AWLvYE7kqHO+AdciUyO2t+bFSPUIzSKXTz8zLJIW5++5q+oQDgw3QYUemwGIURsNR2G0ttoHCUgWAwYCRiizFQ3KiGZ1PW2zVoeox3HBdDiT7zTg6tqtv4EAjcYvcGAxyHMbymJTgp7j2VFvfzlSnE63aK+TcqCfiZJ3uNrbjbElnKqVtKmrqscUFZMtyrsvqckT1KPs0n5EpuAQk96wGwuMP1cy8Kg8ioQXxCqrSNCJARqS4jq26n40Hw5HIIxm36fUcvVJxmkMx6fKkk9vl2crVAnn4lRnCLJUflNj4jAFNrDBLFVqtRqS5M5Li0OwEBlcmKwqxdWOiTsRosop2N7A4eVZfolXkuVKh1BcCerSpyTTXQnXcXHaI3Sq437wvhMcnUHMk6ZT5siRlutTmmYcmHUE6NMVBJU1HVsmy+pB68cY4YouYzm+SwxEkU+BU57ZdDKLJZiMd5Ol1O3tDsUg375264B5CM60/ZLtIq7Q6uBcV0/W2pJ/Ax3+tZpGyspJJ8UVNsj+IB/hhJXmXMCK3IptLlPLjSarIjxnF6XXG0sNoLm6793WV88WtcDFoc5VhGSqPmR2VCQuStlsw+yPt9ToQpQVquNjqAA263wDAZmdJezNIpMAfPJmLfI/dQkf+WKfM9Aqwy1UKjU6m9WHozJeTT20+rxVhO5SUoOpewNgpRHG2KzNGa8w0GVWmxUmVJpaospN44CnmnSQpva420Ksdj57YhokVORWJtajrqc1VMrYaVF0K9rCeQCpAQQPc1k+HcGAZZGfKHSoUSJS45Q2+22mMttoJjslwez1W91NyBcC1za/NkR6fVMxdq7OrCI6PVpKS5JCUeqLbUnW3ISnSUoKgkpVyFJ+IEXhrRTG4yKQ07NqFRUh2CqkU6zq3InalbIeWDobUgKIuSbA8XAtasUefXqolNWbYqtQZ0AUiOv8AkkVSRZK5r4HtVgb6dzzYWwEWNGYrqGZJpzzdBkPh2JSkKIXWZQA1LCT/AEcfUNR2APvHGtZdoS6Y29LmuIfqswpVJdQLISB7rbY6NpGwHXcncnBQ8uppjjk6Y/65VXkBDslSNISgcNtp+BseA55JJxeYAwYMGAMGDBgDEWoU6FVYa4k+K1Jjr95t1AUD+evngwYBQq+RXnohix3o1SgfDTq0gvJR/pvD2iPvqwqpoFSy9cU6RmfLqB8DVqpCFvBO60j6gYMGAGcy1wSEAVvI9RdRqCfXEOQnhq2VseL9cSFVGrrhQoqqJkr1eEUmMn9Y7jVuLDTxsNvIeGDBgIkzMFZly3lSKvkaI+8lLbhjNuT3lJSbpBAG9iSRtycdnL9UzDYVGRmbMCD8DxFKhEeaffUPoDgwYBqpGQ3GYgiyno9PgdadRkFhC/8AUe/pHPtpw4QKfDpkNuJBjNR47YsltpASkfYYMGAk4MGDAGDBgwH/2Q==" alt="ตราหน่วยแพทย์ กอง 11 ศูนย์รักษาความปลอดภัย" style="width:70px;height:70px;border-radius:50%;border:2px solid var(--gold);background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.35);margin-bottom:6px">
+  <h1>⛑️ ปฏิบัติการกู้ชีพ</h1>
+  <div class="sub" style="white-space:nowrap;font-size:clamp(9.5px,3vw,12.5px)">หน่วยแพทย์ กอง 11 ศูนย์รักษาความปลอดภัย กองบัญชาการกองทัพไทย</div>
+  <div style="color:var(--gold);font-size:10px;letter-spacing:6px;margin-top:4px">★ ★ ★</div>
+</header>
+<div class="emg"><span class="pulse"></span> เหตุฉุกเฉินจริง โทร <b>1669</b> · ในหน่วยทหาร: หน่วยแพทย์</div>
+
+<main>
+
+<!-- ================= LEARN ================= -->
+<section class="page on" id="pg-learn">
+  <div class="mascot">
+    <svg width="86" height="96" viewBox="0 0 86 96">
+      <ellipse cx="43" cy="92" rx="26" ry="4" fill="rgba(0,0,0,.12)"/>
+      <rect x="26" y="56" width="34" height="30" rx="9" fill="#556B3A"/>
+      <rect x="26" y="56" width="34" height="30" rx="9" fill="url(#camo)" opacity=".5"/>
+      <rect x="37" y="60" width="12" height="12" rx="2" fill="#fff"/>
+      <rect x="41.5" y="61.5" width="3" height="9" fill="#D63B2F"/><rect x="38.5" y="64.5" width="9" height="3" fill="#D63B2F"/>
+      <circle cx="43" cy="34" r="22" fill="#FBD9B8"/>
+      <path d="M21 34 Q20 12 43 10 Q66 12 65 34 L65 26 Q64 16 43 15 Q22 16 21 26 Z" fill="#3E3226"/>
+      <path d="M18 30 Q18 8 43 6 Q68 8 68 30 Q68 20 43 18 Q18 20 18 30Z" fill="#4A5D3A"/>
+      <rect x="18" y="26" width="50" height="7" rx="3.5" fill="#3E4A2E"/>
+      <circle cx="43" cy="22" r="4.5" fill="#fff"/><rect x="41.7" y="19" width="2.6" height="6" fill="#D63B2F"/><rect x="40" y="20.7" width="6" height="2.6" fill="#D63B2F"/>
+      <ellipse cx="35" cy="37" rx="4.6" ry="5.6" fill="#2B2B2B"/><ellipse cx="51" cy="37" rx="4.6" ry="5.6" fill="#2B2B2B"/>
+      <circle cx="36.6" cy="35" r="1.7" fill="#fff"/><circle cx="52.6" cy="35" r="1.7" fill="#fff"/>
+      <path d="M38 47 Q43 51 48 47" stroke="#C96A4B" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+      <circle cx="28" cy="43" r="3.4" fill="#F6A7A0" opacity=".7"/><circle cx="58" cy="43" r="3.4" fill="#F6A7A0" opacity=".7"/>
+      <defs><pattern id="camo" width="14" height="14" patternUnits="userSpaceOnUse">
+        <circle cx="4" cy="4" r="4" fill="#3E4A2E"/><circle cx="11" cy="10" r="3.4" fill="#6B7F4F"/></pattern></defs>
+    </svg>
+    <div class="bubble" id="mascotSay">สวัสดีครับ! ผม <b>"จ่าหัวใจ"</b> ครูฝึกหน่วยกู้ชีพ 💪 เรียนรู้ 4 ภารกิจด้านล่าง แล้วไปฝึกจังหวะกดหน้าอก ก่อนลุยสนามสอบนะครับ!</div>
+  </div>
+
+  <div class="card">
+    <h2>🎯 ภารกิจที่ 1 <span class="badge red">ลำดับการช่วยชีวิต</span></h2>
+    <div class="step"><div class="no">1</div><div class="tx"><b>Scene Safe — เช็กความปลอดภัย</b><br>มองรอบตัวก่อนเข้าไป: รถ ไฟฟ้า ไฟไหม้ ของมีคม ปลอดภัยแล้วจึงเข้าช่วย (ฮีโร่ต้องไม่กลายเป็นผู้บาดเจ็บคนที่สอง!)</div></div>
+    <div class="step"><div class="no">2</div><div class="tx"><b>ปลุกเรียก</b><br>ตบไหล่ทั้งสองข้าง เรียกเสียงดัง "คุณครับ! ได้ยินไหมครับ!"</div></div>
+    <div class="step"><div class="no">3</div><div class="tx"><b>ขอความช่วยเหลือ</b><br>ชี้ตัวสั่งชัดเจน: "คุณเสื้อแดง! โทร <span class="big">1669</span>" (ในหน่วยทหาร แจ้ง <b>หน่วยแพทย์ กอง 11 ศรภ.</b>) และ "คุณเสื้อฟ้า! ไปเอาเครื่อง AED"</div></div>
+    <div class="step"><div class="no">4</div><div class="tx"><b>เช็กการหายใจ ≤ 10 วินาที</b><br>มองหน้าอก: ไม่หายใจ หรือหายใจเฮือก (gasping) = <span class="big">เริ่ม CPR ทันที</span></div></div>
+  </div>
+
+  <div class="card">
+    <h2>❤️ ภารกิจที่ 2 <span class="badge">กดหน้าอก (CPR)</span></h2>
+    <ul class="tips">
+      <li>วางส้นมือ <b>กึ่งกลางหน้าอก</b> (ครึ่งล่างของกระดูกหน้าอก) ประสานมือ แขนเหยียดตรง</li>
+      <li>กดลึก <span class="big">5–6 ซม.</span> (ผู้ใหญ่) · เร็ว <span class="big">100–120 ครั้ง/นาที</span></li>
+      <li>ปล่อยให้อก <b>คืนตัวเต็มที่</b> ทุกครั้ง — อย่าค้างน้ำหนักไว้</li>
+      <li>อัตราส่วน <span class="big">กด 30 : เป่า 2</span> · หยุดกดให้น้อยที่สุด (ไม่เกิน 10 วิ)</li>
+      <li>เหนื่อยเมื่อไหร่ <b>สลับคนกดทุก 2 นาที</b> · ถ้าเป่าปากไม่ได้ ให้กดอย่างเดียว (Hands-only) ต่อเนื่อง</li>
+      <li>เด็ก: กดลึก 1/3 ของความหนาอก (~5 ซม.) · ทารก: ใช้ 2 นิ้วกดใต้แนวราวนม</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>💨 ภารกิจที่ 3 <span class="badge">การช่วยหายใจ</span></h2>
+    <ul class="tips">
+      <li>เปิดทางเดินหายใจ: <b>กดหน้าผาก–เชยคาง</b> (Head tilt–Chin lift)</li>
+      <li>บีบจมูก ครอบปาก เป่าช้า ๆ <span class="big">1 วินาที</span> จนเห็น <b>อกยกขึ้น</b> — 2 ครั้ง</li>
+      <li>อย่าเป่าแรง/เร็วเกิน → ลมเข้ากระเพาะ เสี่ยงอาเจียน</li>
+      <li>ทารก: ใช้ปากครอบทั้ง <b>ปากและจมูก</b> เป่าเบา ๆ แค่พอเห็นอกยก</li>
+      <li>สงสัยบาดเจ็บคอ/กระดูกสันหลัง: ใช้วิธี <b>ยกขากรรไกร (Jaw thrust)</b> ไม่แหงนคอ</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>🍡 ภารกิจที่ 4 <span class="badge red">สำลัก สิ่งแปลกปลอมอุดทางเดินหายใจ</span></h2>
+    <ul class="tips">
+      <li>สัญญาณอุดตันสมบูรณ์: <b>พูดไม่ได้ ไอไม่ออก มือกุมคอ</b> หน้าเริ่มเขียว</li>
+      <li>ยังไอได้เสียงดัง → <b>กระตุ้นให้ไอต่อ</b> เฝ้าดูใกล้ ๆ อย่าเพิ่งตบหลัง</li>
+      <li>ผู้ใหญ่/เด็กโต: <span class="big">ตบหลัง 5 ครั้ง สลับ รัดกระตุกหน้าท้อง 5 ครั้ง</span> (กำหมัดวางเหนือสะดือ ใต้ลิ้นปี่ กระตุกเข้า–ขึ้น)</li>
+      <li>ทารก &lt; 1 ปี: <b>ตบหลัง 5 + กดหน้าอก 5</b> — <span class="big">ห้าม</span>รัดกระตุกหน้าท้อง</li>
+      <li>คนท้อง/อ้วนมาก: ใช้ <b>กดกระตุกหน้าอก</b> (Chest thrust) แทน</li>
+      <li>ถ้าหมดสติ → วางลงพื้น เริ่ม <b>CPR ทันที</b> (ก่อนเป่าให้มองในปาก เห็นสิ่งแปลกปลอมชัดจึงหยิบออก — ห้ามล้วงสุ่ม)</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>⚡ ภารกิจพิเศษ <span class="badge gold">เครื่อง AED</span></h2>
+    <ul class="tips">
+      <li>AED มาถึง → <b>เปิดเครื่องทันที</b> ทำตามเสียงสั่ง ติดแผ่นตามรูป (อกเปียกให้เช็ดแห้งก่อน)</li>
+      <li>เครื่องวิเคราะห์/ช็อก → ตะโกน <span class="big">"ฉันถอย คุณถอย ทุกคนถอย!"</span> ห้ามใครแตะตัวผู้ป่วย</li>
+      <li>ช็อกเสร็จ → <b>กดหน้าอกต่อทันที</b> ไม่ต้องรอ</li>
+      <li>หยุด CPR เมื่อ: ผู้ป่วยขยับ/หายใจเอง · ทีมแพทย์มารับช่วง · หรือผู้ช่วยหมดแรงจริง ๆ</li>
+    </ul>
+  </div>
+
+  <button class="btn gold" onclick="go('tap')">🥁 ไปฝึกจังหวะกดหน้าอก →</button>
+  <button class="btn red" onclick="go('quiz')">🎖️ พร้อมแล้ว! เข้าสนามสอบ</button>
+  <p class="note" style="text-align:center">อ้างอิงแนวทางการช่วยชีวิตขั้นพื้นฐาน Thai CPR Guideline 2025<br><span style="white-space:nowrap;font-size:10.5px;letter-spacing:-.1px">สื่อฝึกอบรมเพื่อการเรียนรู้ ไม่ทดแทนการฝึกปฏิบัติกับหุ่นและครูฝึก</span></p>
+</section>
+
+<!-- ================= TAP TRAINER ================= -->
+<section class="page" id="pg-tap">
+  <div class="card center">
+    <h2 style="justify-content:center">🥁 สนามฝึกจังหวะ CPR</h2>
+    <p style="font-size:14px;margin-top:6px">แตะปุ่มแดงเป็นจังหวะสม่ำเสมอ เป้าหมาย <b class="big">100–120 ครั้ง/นาที</b><br>ครบ 30 ครั้ง = จบ 1 รอบกด (แล้วเป่า 2 ครั้ง!)</p>
+    <div class="gauge"><div class="num" id="bpm">--</div><div class="lab">ครั้ง/นาที (BPM)</div></div>
+    <div class="rateband"><div class="pin" id="pin" style="left:50%"></div></div>
+    <div class="bandlab"><span>ช้าไป &lt;100</span><span>✅ พอดี</span><span>เร็วไป &gt;120</span></div>
+    <div id="tapBtn"><span id="tapCount">กด!</span><small id="tapSub">แตะเพื่อเริ่ม</small></div>
+    <div class="verdict" id="verdict"></div>
+    <div class="btnrow">
+      <button class="btn ghost" id="metroBtn" onclick="toggleMetro('click')">🔊 คลิก 110</button>
+      <button class="btn ghost" id="discoBtn" onclick="toggleMetro('disco')">🕺 ดิสโก้ 120</button>
+    </div>
+    <p class="note" style="text-align:center;margin:4px 0 0">เสียงจะหยุดเองเมื่อหยุดกดเกิน 5 วินาที</p>
+    <button class="btn ghost" onclick="resetTap()">↺ เริ่มใหม่</button>
+  </div>
+</section>
+
+<!-- ================= QUIZ ================= -->
+<section class="page" id="pg-quiz">
+  <div id="quizIntro">
+    <div class="card center">
+      <h2 style="justify-content:center">🎖️ สนามสอบวัดยุทธการกู้ชีพ</h2>
+      <p style="font-size:14.5px;margin:8px 0;line-height:1.7">สุ่ม <b>10 ข้อ</b> จากคลัง <b>40 ข้อ</b> · ข้อละ 1 คะแนน เต็ม 10<br>ตอบแล้วเฉลยทันทีพร้อมคำอธิบายจากจ่าหัวใจ<br>ผลสอบจะถูกบันทึกวัน–เวลาไว้ในสมุดพก</p>
+      <button class="btn red" onclick="startQuiz()">🚀 เริ่มปฏิบัติการ!</button>
+    </div>
+  </div>
+  <div id="quizPlay" style="display:none">
+    <div class="qhead"><span id="qNo"></span><span id="qScore"></span></div>
+    <div class="qbar"><i id="qBar"></i></div>
+    <div class="card">
+      <div class="qtext" id="qText"></div>
+      <div id="qChoices"></div>
+      <div class="fb" id="qFb"></div>
+    </div>
+    <button class="btn" id="qNext" style="display:none" onclick="nextQ()">ข้อต่อไป →</button>
+  </div>
+  <div id="quizDone" style="display:none">
+    <div class="card result">
+      <img id="unitLogo2" alt="ตราหน่วย" style="width:52px;height:52px;border-radius:50%;border:2px solid var(--olive);margin-bottom:6px"><br><div class="badge gold">รายงานผลปฏิบัติการ · หน่วยแพทย์ กอง ๑๑ ศรภ.</div>
+      <div class="score-ring" id="ring"><b id="finalScore">0</b><span>/ 10 คะแนน</span></div>
+      <div class="rank" id="rankTxt"></div>
+      <p id="doneMsg" style="font-size:14px;line-height:1.7"></p>
+      <p class="note" id="doneTime"></p>
+    </div>
+    <button class="btn red" onclick="startQuiz()">🔁 สอบใหม่ (สุ่มข้อใหม่)</button>
+    <button class="btn ghost" onclick="go('hist')">📒 ดูสมุดพกประวัติการสอบ</button>
+    <button class="btn ghost" onclick="go('learn')">📖 กลับไปทบทวนบทเรียน</button>
+  </div>
+</section>
+
+<!-- ================= HISTORY ================= -->
+<section class="page" id="pg-hist">
+  <div class="card">
+    <h2>📒 สมุดพกประจำตัวกำลังพล</h2>
+    <p style="font-size:13.5px;color:#666;margin:4px 0 10px">บันทึกวัน–เวลา และผลการสอบทุกครั้ง</p>
+    <div id="histBody"></div>
+    <button class="btn ghost" style="margin-top:10px" onclick="clearHist()">🗑️ ล้างประวัติทั้งหมด</button>
+  </div>
+</section>
+
+</main>
+
+<nav>
+  <button class="on" data-p="learn" onclick="go('learn')"><span class="ic">📖</span>บทเรียน</button>
+  <button data-p="tap" onclick="go('tap')"><span class="ic">🥁</span>ฝึกจังหวะ</button>
+  <button data-p="quiz" onclick="go('quiz')"><span class="ic">🎖️</span>สนามสอบ</button>
+  <button data-p="hist" onclick="go('hist')"><span class="ic">📒</span>สมุดพก</button>
+</nav>
+
+<script>
+/* ============ NAVIGATION ============ */
+function go(p){
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));
+  document.getElementById('pg-'+p).classList.add('on');
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.p===p));
+  window.scrollTo({top:0});
+  if(p==='hist') renderHist();
+}
+
+/* ============ QUESTION BANK (40) ============ */
+/* q, c[4], a(index), ex(explanation) */
+const BANK=[
+{q:"พบคนนอนหมดสติกลางถนน สิ่งแรกที่ต้องทำคือ?",c:["วิ่งเข้าไปกดหน้าอกทันที","ตรวจสอบความปลอดภัยของสถานที่ก่อน","ถ่ายคลิปไว้เป็นหลักฐาน","ยกตัวผู้ป่วยขึ้นนั่ง"],a:1,ex:"Scene Safe ต้องมาก่อนเสมอ! ฮีโร่ต้องไม่กลายเป็นผู้บาดเจ็บคนที่สอง"},
+{q:"หมายเลขโทรศัพท์ฉุกเฉินการแพทย์ของประเทศไทยคือ?",c:["191","1669","199","1155"],a:1,ex:"1669 คือสายด่วนกู้ชีพทั่วประเทศ (191 คือตำรวจ, 199 ดับเพลิง)"},
+{q:"วิธีปลุกเรียกผู้หมดสติที่ถูกต้องคือ?",c:["สาดน้ำใส่หน้า","เขย่าตัวแรง ๆ","ตบไหล่ทั้งสองข้างพร้อมเรียกเสียงดัง","ตบหน้าเบา ๆ"],a:2,ex:"ตบไหล่ + เรียกเสียงดัง ปลอดภัยและได้ผล ไม่ควรเขย่าแรงเพราะอาจมีบาดเจ็บคอ"},
+{q:"การตรวจดูการหายใจ ควรใช้เวลาไม่เกินกี่วินาที?",c:["5 วินาที","10 วินาที","30 วินาที","1 นาที"],a:1,ex:"มองการเคลื่อนไหวของหน้าอกไม่เกิน 10 วินาที อย่าเสียเวลา!"},
+{q:"ผู้ป่วยหายใจเฮือก ๆ เป็นครั้งคราว (gasping) ถือว่า?",c:["หายใจปกติ ไม่ต้องทำอะไร","หายใจผิดปกติ ต้องเริ่ม CPR ทันที","แค่เหนื่อย ให้นอนพัก","ให้ดื่มน้ำ"],a:1,ex:"Gasping = สัญญาณหัวใจหยุดเต้น! นับเป็นไม่หายใจ ต้องเริ่ม CPR ทันที"},
+{q:"อยู่คนเดียว พบผู้ใหญ่หมดสติไม่หายใจ ควรทำอย่างไร?",c:["กด CPR 30 นาทีก่อนค่อยโทร","โทร 1669 เปิดลำโพง แล้วเริ่ม CPR ทันที","วิ่งไปหาคนช่วยไกล ๆ ก่อน","รอดูอาการ 5 นาที"],a:1,ex:"โทร 1669 เปิดลำโพงวางข้างตัว แล้วลงมือกดหน้าอกทันที เจ้าหน้าที่จะแนะนำทางสายได้"},
+{q:"การขอความช่วยเหลือจากคนรอบข้างที่ได้ผลที่สุดคือ?",c:["ตะโกนว่า 'ใครก็ได้ช่วยที!'","ชี้ตัวเจาะจง 'คุณเสื้อแดง โทร 1669!'","กระซิบบอกคนข้าง ๆ","โบกมือเรียกเฉย ๆ"],a:1,ex:"ชี้ตัวสั่งเจาะจง! ถ้าสั่งลอย ๆ ทุกคนจะคิดว่า 'เดี๋ยวคนอื่นทำ' (Bystander effect)"},
+{q:"ทำไมต้องรีบให้คนไปนำเครื่อง AED มาด้วย?",c:["ไว้วัดความดัน","การช็อกไฟฟ้าเร็วเพิ่มโอกาสรอดชีวิตมาก","ไว้เรียกรถพยาบาล","ใช้แทนการกดหน้าอกได้เลย"],a:1,ex:"ทุกนาทีที่ช้า โอกาสรอดลดลง ~10% การช็อกเร็ว + CPR ดี คือหัวใจของการรอดชีวิต"},
+{q:"ความลึกการกดหน้าอกผู้ใหญ่ตามแนวทางปัจจุบันคือ?",c:["2–3 ซม.","3–4 ซม.","5–6 ซม.","ยิ่งลึกยิ่งดี ไม่จำกัด"],a:2,ex:"กดลึก 5–6 ซม. ลึกพอให้เลือดไปเลี้ยงสมอง แต่ไม่เกิน 6 ซม. เพื่อลดการบาดเจ็บ"},
+{q:"อัตราเร็วการกดหน้าอกที่ถูกต้องคือ?",c:["60–80 ครั้ง/นาที","80–100 ครั้ง/นาที","100–120 ครั้ง/นาที","150–180 ครั้ง/นาที"],a:2,ex:"100–120 ครั้ง/นาที จำง่าย ๆ: จังหวะเพลงมาร์ชเดินเร็ว ๆ นั่นแหละ!"},
+{q:"ตำแหน่งวางมือกดหน้าอกผู้ใหญ่คือ?",c:["เหนือลิ้นปี่","กึ่งกลางหน้าอก ครึ่งล่างของกระดูกหน้าอก","ชายโครงซ้าย","กลางท้อง"],a:1,ex:"ส้นมือวางกึ่งกลางหน้าอกบนครึ่งล่างของกระดูกหน้าอก (ระหว่างหัวนมทั้งสอง)"},
+{q:"อัตราส่วนการกดหน้าอกต่อการเป่าปากในผู้ใหญ่คือ?",c:["15 : 2","30 : 2","30 : 5","50 : 2"],a:1,ex:"กด 30 ครั้ง : เป่า 2 ครั้ง วนไปจนกว่าความช่วยเหลือจะมาถึง"},
+{q:"หลังกดหน้าอกแต่ละครั้ง ต้องทำอย่างไร?",c:["กดค้างไว้ 1 วินาที","ปล่อยให้หน้าอกคืนตัวเต็มที่","ยกมือออกจากอกทุกครั้ง","เขย่าตัวผู้ป่วย"],a:1,ex:"Full recoil! ปล่อยให้อกเด้งคืนเต็มที่เพื่อให้หัวใจรับเลือดกลับ แต่มือยังแตะอกไว้ไม่ยกออก"},
+{q:"ท่าทางแขนที่ถูกต้องขณะกดหน้าอกคือ?",c:["งอศอกเพื่อผ่อนแรง","แขนเหยียดตรง ตั้งฉากกับหน้าอก","ใช้มือเดียวกดสลับ","กดจากด้านข้างลำตัว"],a:1,ex:"แขนตรง ล็อกศอก โน้มน้ำหนักตัวลงจากไหล่ จะกดได้ลึกและไม่เมื่อยเร็ว"},
+{q:"การหยุดกดหน้าอกแต่ละครั้ง (เช่น ตอนเป่าปาก) ไม่ควรเกิน?",c:["10 วินาที","30 วินาที","1 นาที","หยุดนานเท่าไหร่ก็ได้"],a:0,ex:"Minimize interruption! หยุดกดเกิน 10 วิ เลือดที่ไปเลี้ยงสมองจะตกฮวบ"},
+{q:"หากมีผู้ช่วยหลายคน ควรสลับคนกดหน้าอกทุก ๆ?",c:["30 วินาที","2 นาที","10 นาที","ไม่ต้องสลับ"],a:1,ex:"สลับทุก 2 นาที (หรือ ~5 รอบของ 30:2) เพราะคนเราล้าเร็วกว่าที่คิด คุณภาพการกดจะตก"},
+{q:"ควรทำ CPR บนพื้นผิวแบบใด?",c:["ที่นอนนุ่ม ๆ","โซฟา","พื้นแข็งราบ","เตียงสปริง"],a:2,ex:"พื้นแข็ง! ถ้าพื้นนุ่ม แรงกดจะจมหายไปกับที่นอน กดเท่าไหร่ก็ไม่ลึกพอ"},
+{q:"ถ้าไม่สะดวกหรือไม่มั่นใจที่จะเป่าปาก ควรทำอย่างไร?",c:["ไม่ต้องทำ CPR เลย","กดหน้าอกอย่างเดียวต่อเนื่อง (Hands-only CPR)","เป่าจมูกแทน","รอทีมแพทย์อย่างเดียว"],a:1,ex:"Hands-only CPR ก็ช่วยชีวิตได้! กดต่อเนื่อง 100–120/นาที ดีกว่าไม่ทำอะไรเลยมหาศาล"},
+{q:"ความลึกการกดหน้าอกในเด็ก (1 ปี – วัยรุ่น) คือ?",c:["1/2 ของความหนาอก","1/3 ของความหนาอก (~5 ซม.)","2 ซม. พอ","เท่าผู้ใหญ่เป๊ะ 6 ซม.ขึ้นไป"],a:1,ex:"เด็กกดลึกประมาณ 1/3 ของความหนาทรวงอก (~5 ซม.) ใช้มือเดียวหรือสองมือตามขนาดตัวเด็ก"},
+{q:"การกดหน้าอกทารก (อายุ < 1 ปี) เมื่อมีผู้ช่วยคนเดียว ใช้อะไรกด?",c:["ส้นมือสองข้าง","นิ้วมือ 2 นิ้ว กดใต้แนวราวนม","ฝ่าเท้า","กำปั้น"],a:1,ex:"ใช้ 2 นิ้ว (ชี้+กลาง) กดกึ่งกลางอกใต้แนวราวนมเล็กน้อย ลึก 1/3 ความหนาอก (~4 ซม.)"},
+{q:"วิธีเปิดทางเดินหายใจมาตรฐานคือ?",c:["ดันคางลง","กดหน้าผาก–เชยคางขึ้น (Head tilt–Chin lift)","จับนอนคว่ำ","ยกขาสูง"],a:1,ex:"มือหนึ่งกดหน้าผากให้แหงน อีกมือเชยปลายคางขึ้น ลิ้นจะพ้นจากการอุดทางเดินหายใจ"},
+{q:"การเป่าปากแต่ละครั้งควรเป่านานเท่าใด?",c:["เป่าเร็วแรงที่สุด","เป่าช้า ๆ ประมาณ 1 วินาที จนเห็นอกยก","เป่ายาว 5 วินาที","เป่าสั้น ๆ ครึ่งวินาที 10 ครั้งรัว"],a:1,ex:"เป่า ~1 วินาที ให้เห็นหน้าอกยกขึ้นพอดี แล้วปล่อยให้ลมออก ก่อนเป่าครั้งที่สอง"},
+{q:"การเป่าปากแรงและเร็วเกินไป จะเกิดผลเสียอย่างไร?",c:["ไม่มีผลเสีย ยิ่งแรงยิ่งดี","ลมเข้ากระเพาะ ท้องอืด เสี่ยงอาเจียนและสำลัก","ผู้ป่วยจะตื่นเร็วขึ้น","อกจะยกสูงดี"],a:1,ex:"ลมส่วนเกินจะเข้ากระเพาะ ทำให้อาเจียนแล้วสำลักเข้าปอดได้ อันตรายมาก"},
+{q:"ผู้ป่วยสงสัยบาดเจ็บกระดูกคอ (เช่น ตกจากที่สูง) ควรเปิดทางเดินหายใจแบบใด?",c:["แหงนคอเต็มที่","ยกขากรรไกรล่าง (Jaw thrust) โดยไม่แหงนคอ","จับนั่งพิงกำแพง","พลิกตัวคว่ำ"],a:1,ex:"Jaw thrust: ใช้นิ้วดันมุมขากรรไกรขึ้นทั้งสองข้าง คอไม่ขยับ ป้องกันไขสันหลังบาดเจ็บซ้ำ"},
+{q:"อัตราส่วนกด:เป่า ในเด็ก/ทารก เมื่อมีผู้ช่วย 2 คนคือ?",c:["30 : 2","15 : 2","5 : 1","50 : 5"],a:1,ex:"เด็กและทารกเมื่อมีผู้ช่วย 2 คน ใช้ 15:2 (ถ้าคนเดียวใช้ 30:2 เหมือนผู้ใหญ่)"},
+{q:"การเป่าปากช่วยหายใจทารก ทำอย่างไร?",c:["บีบจมูกเป่าปากแรง ๆ","ใช้ปากครอบทั้งปากและจมูกทารก เป่าเบา ๆ","เป่าเข้าจมูกอย่างเดียว","เป่าผ่านผ้าหนา ๆ"],a:1,ex:"ปากผู้ช่วยครอบทั้งปาก+จมูกทารก เป่าเบา ๆ แค่พอเห็นอกยก — ปอดทารกเล็กนิดเดียว!"},
+{q:"สัญญาณของการอุดกั้นทางเดินหายใจแบบสมบูรณ์คือ?",c:["ไอเสียงดัง พูดได้","พูดไม่ได้ ไอไม่ออก มือกุมคอ","จามบ่อย ๆ","เสียงแหบเล็กน้อย"],a:1,ex:"Universal choking sign: มือกุมคอ พูด/ไอ/หายใจไม่ได้ หน้าเริ่มเขียว = ต้องช่วยทันที!"},
+{q:"ผู้ใหญ่สำลักรุนแรงแต่ยังรู้สึกตัว ควรช่วยอย่างไร?",c:["ให้ดื่มน้ำเยอะ ๆ","ตบหลัง 5 ครั้ง สลับกับรัดกระตุกหน้าท้อง 5 ครั้ง","จับนอนราบทันที","ล้วงคอทันที"],a:1,ex:"ตบหลังแรง ๆ ระหว่างสะบัก 5 ครั้ง สลับ Abdominal thrust 5 ครั้ง วนไปจนหลุดหรือหมดสติ"},
+{q:"ตำแหน่งวางกำปั้นในการรัดกระตุกหน้าท้อง (Abdominal thrust) คือ?",c:["กลางอก","เหนือสะดือ ใต้ลิ้นปี่","ใต้สะดือ","ชายโครงขวา"],a:1,ex:"กำหมัดวางเหนือสะดือเล็กน้อย ใต้ลิ้นปี่ อีกมือกุมทับ กระตุกเข้า–ขึ้นแรง ๆ"},
+{q:"ทารกอายุต่ำกว่า 1 ปีสำลัก ควรช่วยอย่างไร?",c:["รัดกระตุกหน้าท้องเหมือนผู้ใหญ่","ตบหลัง 5 ครั้ง สลับกดหน้าอก 5 ครั้ง","จับห้อยหัวเขย่า","ล้วงคอลึก ๆ"],a:1,ex:"คว่ำทารกบนแขน ตบหลัง 5 → พลิกหงาย กดอก 5 วนไป ห้ามรัดท้องเด็ดขาด (อวัยวะภายในบาดเจ็บ)"},
+{q:"หญิงตั้งครรภ์หรือคนอ้วนมากที่สำลัก ควรใช้วิธีใด?",c:["รัดหน้าท้องแรงขึ้นเป็นพิเศษ","กดกระตุกที่หน้าอก (Chest thrust) แทน","ให้กินข้าวตาม","อุ้มพาดบ่า"],a:1,ex:"รัดท้องไม่ได้ (มีน้อง/รัดไม่ถึง) ให้กอดจากด้านหลังระดับอก กระตุกที่กึ่งกลางกระดูกหน้าอกแทน"},
+{q:"ผู้สำลักที่ช่วยอยู่เกิดหมดสติล้มลง ต้องทำอย่างไร?",c:["รัดหน้าท้องต่อในท่านอน","วางลงพื้นอย่างปลอดภัย โทรแจ้ง แล้วเริ่ม CPR ทันที","อุ้มขึ้นรถไปเอง","เขย่าตัวให้ตื่น"],a:1,ex:"หมดสติ = เปลี่ยนโหมดเป็น CPR ทันที! ก่อนเป่าแต่ละรอบให้ชำเลืองมองในปาก เห็นของชัดค่อยหยิบออก"},
+{q:"ผู้สำลักยังไอได้เสียงดังและหายใจได้ ควรทำอย่างไร?",c:["ตบหลังแรง ๆ ทันที","กระตุ้นให้ไอต่อ เฝ้าดูใกล้ชิด","รัดกระตุกหน้าท้องทันที","จับนอนราบ"],a:1,ex:"ไอได้ = ทางเดินหายใจยังเปิดบางส่วน การไอคือแรงขับที่ดีที่สุด อย่าเพิ่งแทรกแซง แต่ห้ามคลาดสายตา"},
+{q:"สิ่งที่ 'ห้ามทำ' ในการช่วยผู้สำลักคือ?",c:["ตบหลัง","ใช้นิ้วล้วงคอสุ่ม ๆ ทั้งที่มองไม่เห็นสิ่งแปลกปลอม","โทร 1669","กระตุ้นให้ไอ"],a:1,ex:"Blind finger sweep ห้ามเด็ดขาด! อาจดันสิ่งแปลกปลอมลึกลงไปอีก หยิบออกเฉพาะเมื่อมองเห็นชัดเท่านั้น"},
+{q:"AED คือเครื่องอะไร?",c:["เครื่องวัดความดันอัตโนมัติ","เครื่องช็อกไฟฟ้าหัวใจอัตโนมัติ","เครื่องช่วยหายใจ","เครื่องวัดน้ำตาล"],a:1,ex:"Automated External Defibrillator — วิเคราะห์คลื่นหัวใจและช็อกไฟฟ้าเพื่อให้หัวใจกลับมาเต้นปกติ"},
+{q:"เมื่อเครื่อง AED มาถึง ควรทำอย่างไร?",c:["รอทีมแพทย์มาใช้ให้","เปิดเครื่องทันที และทำตามคำสั่งเสียง","เก็บไว้ก่อน กดหน้าอกให้ครบชั่วโมง","แกะแบตออกเช็กก่อน"],a:1,ex:"เปิดเครื่องทันที! AED ถูกออกแบบให้คนทั่วไปใช้ได้ แค่ทำตามเสียงสั่งทีละขั้น"},
+{q:"ขณะเครื่อง AED กำลังวิเคราะห์หรือกำลังช็อก ต้องทำอย่างไร?",c:["กดหน้าอกต่อไม่ต้องหยุด","ตะโกน 'ฉันถอย คุณถอย ทุกคนถอย!' ห้ามใครแตะตัวผู้ป่วย","จับมือผู้ป่วยให้กำลังใจ","เป่าปากไปด้วย"],a:1,ex:"ตะโกน 'ฉันถอย คุณถอย ทุกคนถอย!' กวาดตามองรอบตัวให้ชัวร์ว่าไม่มีใครแตะผู้ป่วย ไฟฟ้าอาจดูดผู้ช่วยได้"},
+{q:"หลังเครื่อง AED ช็อกเสร็จ ต้องทำอย่างไรทันที?",c:["รอดูว่าตื่นไหม 5 นาที","กดหน้าอกต่อทันที","ถอดแผ่นออก","ยกตัวขึ้นนั่ง"],a:1,ex:"ช็อกเสร็จปุ๊บ กดต่อปั๊บ! ไม่ต้องรอเช็กชีพจร เครื่องจะสั่งวิเคราะห์ใหม่เองทุก 2 นาที"},
+{q:"ผู้ป่วยตัวเปียกน้ำ ก่อนติดแผ่น AED ต้องทำอย่างไร?",c:["ติดได้เลย น้ำนำไฟฟ้าดี","เช็ดหน้าอกให้แห้งก่อนติดแผ่น","ราดน้ำเพิ่มให้ทั่ว","ไม่ต้องใช้ AED แล้ว"],a:1,ex:"เช็ดอกให้แห้งก่อน! น้ำจะทำให้ไฟฟ้าวิ่งบนผิวหนัง แทนที่จะผ่านเข้าหัวใจ และย้ายผู้ป่วยพ้นแอ่งน้ำ"},
+{q:"เราสามารถหยุดทำ CPR ได้เมื่อใด?",c:["ครบ 5 นาทีแล้วเหนื่อย","ผู้ป่วยขยับ/หายใจเอง หรือทีมแพทย์มารับช่วงต่อ","มีคนมุงเยอะแล้ว","โทร 1669 เสร็จแล้ว"],a:1,ex:"กดต่อเนื่องจนกว่า: ผู้ป่วยตอบสนอง, ทีมกู้ชีพรับช่วง, หรือผู้ช่วยหมดแรงจริง ๆ จนทำต่อไม่ได้"}
+];
+
+/* ============ QUIZ ENGINE ============ */
+let qSet=[],qIdx=0,score=0,answered=false;
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function startQuiz(){
+  qSet=shuffle([...BANK.keys()]).slice(0,10).map(i=>BANK[i]);
+  qIdx=0;score=0;
+  document.getElementById('quizIntro').style.display='none';
+  document.getElementById('quizDone').style.display='none';
+  document.getElementById('quizPlay').style.display='block';
+  go('quiz');renderQ();
+}
+function renderQ(){
+  answered=false;const q=qSet[qIdx];
+  document.getElementById('qNo').textContent=`ข้อ ${qIdx+1} / 10`;
+  document.getElementById('qScore').textContent=`⭐ ${score} คะแนน`;
+  document.getElementById('qBar').style.width=(qIdx/10*100)+'%';
+  document.getElementById('qText').textContent=q.q;
+  const box=document.getElementById('qChoices');box.innerHTML='';
+  const order=shuffle([0,1,2,3]);
+  order.forEach(ci=>{
+    const b=document.createElement('button');b.className='choice';
+    b.textContent='◈ '+q.c[ci];b.onclick=()=>answer(b,ci===q.a,q);
+    box.appendChild(b);
+  });
+  const fb=document.getElementById('qFb');fb.className='fb';fb.innerHTML='';
+  document.getElementById('qNext').style.display='none';
+}
+function answer(btn,correct,q){
+  if(answered)return;answered=true;
+  document.querySelectorAll('.choice').forEach(b=>{
+    b.disabled=true;
+    if(b.textContent==='◈ '+q.c[q.a])b.classList.add('ok');
+  });
+  if(!correct)btn.classList.add('bad');else score++;
+  const fb=document.getElementById('qFb');
+  fb.className='fb on '+(correct?'good':'badd');
+  fb.innerHTML=(correct?'<span class="kanit">✅ ยอดเยี่ยม พลทหาร!</span>':'<span class="kanit">❌ พลาด! จ่าอธิบายให้ฟัง:</span>')+'<br>'+q.ex;
+  document.getElementById('qScore').textContent=`⭐ ${score} คะแนน`;
+  document.getElementById('qNext').style.display='block';
+  document.getElementById('qNext').textContent=qIdx===9?'📋 ดูรายงานผล →':'ข้อต่อไป →';
+}
+function nextQ(){
+  qIdx++;
+  if(qIdx<10){renderQ();window.scrollTo({top:0})}
+  else finishQuiz();
+}
+function rankOf(s){
+  if(s===10)return['🏅 ผู้บังคับหน่วยแพทย์กู้ชีพ','สุดยอด! เพอร์เฟกต์ 10 เต็ม 10 พร้อมช่วยชีวิตจริง'];
+  if(s>=9)return['🎖️ ร้อยเอกหน่วยกู้ชีพ','เก่งมาก! เก็บอีกนิดเดียวก็เต็ม'];
+  if(s>=7)return['🪖 จ่าสิบเอกกู้ชีพ','ผ่านเกณฑ์อย่างสวยงาม ทบทวนข้อที่พลาดอีกหน่อยนะ'];
+  if(s>=5)return['⛺ สิบตรีฝึกหัด','พอใช้ได้ แต่ชีวิตคนรอไม่ได้ กลับไปทบทวนบทเรียนอีกรอบ!'];
+  return['🎒 พลทหารใหม่','ยังไม่ผ่านเกณฑ์! จ่าสั่งกลับไปเรียนบทเรียนใหม่ทั้งหมด แล้วมาสอบแก้ตัว 💪'];
+}
+async function finishQuiz(){
+  document.getElementById('quizPlay').style.display='none';
+  document.getElementById('quizDone').style.display='block';
+  document.getElementById('finalScore').textContent=score;
+  document.getElementById('ring').style.setProperty('--pct',(score*10)+'%');
+  const[r,m]=rankOf(score);
+  document.getElementById('rankTxt').innerHTML=r;
+  document.getElementById('doneMsg').textContent=m;
+  const now=new Date();
+  document.getElementById('doneTime').textContent='บันทึกผลเมื่อ: '+fmtDate(now);
+  await saveAttempt({t:now.toISOString(),s:score});
+  window.scrollTo({top:0});
+}
+function fmtDate(d){
+  const th=new Intl.DateTimeFormat('th-TH',{dateStyle:'medium',timeStyle:'short'});
+  return th.format(d)+' น.';
+}
+
+/* ============ HISTORY (persistent + fallback) ============ */
+let memHist=[];
+async function loadHist(){
+  try{
+    if(window.storage){
+      const r=await window.storage.get('bls-quiz-history');
+      if(r&&r.value)return JSON.parse(r.value);
+    }
+  }catch(e){/* key not found or storage unavailable */}
+  return memHist;
+}
+async function saveAttempt(rec){
+  const h=await loadHist();h.unshift(rec);if(h.length>100)h.length=100;
+  memHist=h;
+  try{if(window.storage)await window.storage.set('bls-quiz-history',JSON.stringify(h));}catch(e){}
+}
+async function clearHist(){
+  if(!confirm('ล้างประวัติการสอบทั้งหมด?'))return;
+  memHist=[];
+  try{if(window.storage)await window.storage.delete('bls-quiz-history');}catch(e){}
+  renderHist();
+}
+async function renderHist(){
+  const h=await loadHist();
+  const box=document.getElementById('histBody');
+  if(!h.length){box.innerHTML='<div class="empty">ยังไม่มีบันทึก — ไปสอบสนามแรกกันเลย! 🎖️</div>';return}
+  const best=Math.max(...h.map(x=>x.s));
+  let rows=h.map((x,i)=>{
+    const[r]=rankOf(x.s);
+    return`<tr><td>${h.length-i}</td><td style="text-align:left">${fmtDate(new Date(x.t))}</td><td class="sc">${x.s}/10</td><td>${r.split(' ')[0]}</td></tr>`;
+  }).join('');
+  box.innerHTML=`<p style="font-size:13.5px;margin-bottom:8px">สอบทั้งหมด <b>${h.length}</b> ครั้ง · คะแนนสูงสุด <b class="big">${best}/10</b></p>
+  <table class="hist"><tr><th>ครั้งที่</th><th>วัน–เวลา</th><th>คะแนน</th><th>ยศ</th></tr>${rows}</table>`;
+}
+
+/* ============ CPR TAP TRAINER ============ */
+let taps=[],tapN=0;
+const tapBtn=document.getElementById('tapBtn');
+tapBtn.addEventListener('pointerdown',e=>{
+  e.preventDefault();bumpActivity();
+  const now=performance.now();
+  taps.push(now);tapN++;
+  if(taps.length>8)taps.shift();
+  document.getElementById('tapCount').textContent=((tapN-1)%30)+1;
+  document.getElementById('tapSub').textContent=tapN%30===0?'ครบ 30! เป่า 2 ครั้ง 💨':'ครั้งที่ '+tapN;
+  if(taps.length>=3){
+    const iv=[];for(let i=1;i<taps.length;i++)iv.push(taps[i]-taps[i-1]);
+    const avg=iv.reduce((a,b)=>a+b)/iv.length;
+    const bpm=Math.round(60000/avg);
+    document.getElementById('bpm').textContent=bpm;
+    const pos=Math.min(98,Math.max(1,((bpm-70)/(150-70))*100));
+    document.getElementById('pin').style.left=pos+'%';
+    const v=document.getElementById('verdict');
+    if(bpm<100){v.textContent='🐢 ช้าไป! เร่งอีกหน่อย';v.style.color='#3C7BB0'}
+    else if(bpm<=120){v.textContent='✅ จังหวะเป๊ะ! รักษาไว้';v.style.color='var(--ok)'}
+    else{v.textContent='🔥 เร็วเกิน! ผ่อนลงนิด';v.style.color='var(--red)'}
+  }
+  if(tapN%30===0&&navigator.vibrate)navigator.vibrate(200);
+});
+tapBtn.addEventListener('contextmenu',e=>e.preventDefault());
+document.getElementById('unitLogo2').src=document.getElementById('unitLogo').src;
+function resetTap(){
+  taps=[];tapN=0;
+  document.getElementById('bpm').textContent='--';
+  document.getElementById('tapCount').textContent='กด!';
+  document.getElementById('tapSub').textContent='แตะเพื่อเริ่ม';
+  document.getElementById('verdict').textContent='';
+  document.getElementById('pin').style.left='50%';
+}
+/* metronome: click 110 bpm / disco groove 120 bpm (Web Audio) */
+let ac=null,metroTimer=null,metroMode=null;
+function stopMetro(){
+  if(metroTimer){clearInterval(metroTimer);metroTimer=null}
+  metroMode=null;
+  document.getElementById('metroBtn').textContent="🔊 คลิก 110";
+  document.getElementById('discoBtn').textContent="🕺 ดิสโก้ 120";
+}
+function ensureAC(){
+  if(!ac)ac=new (window.AudioContext||window.webkitAudioContext)();
+  if(ac.state==='suspended')ac.resume();
+}
+function click880(vol){
+  const o=ac.createOscillator(),g=ac.createGain();
+  o.frequency.value=880;o.connect(g);g.connect(ac.destination);
+  g.gain.setValueAtTime(vol,ac.currentTime);
+  g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.07);
+  o.start();o.stop(ac.currentTime+.08);
+}
+function kick(){
+  const o=ac.createOscillator(),g=ac.createGain();
+  o.type='sine';o.frequency.setValueAtTime(150,ac.currentTime);
+  o.frequency.exponentialRampToValueAtTime(48,ac.currentTime+.12);
+  g.gain.setValueAtTime(.9,ac.currentTime);
+  g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.15);
+  o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+.16);
+}
+function hat(open){
+  const len=open?.14:.05,buf=ac.createBuffer(1,ac.sampleRate*len,ac.sampleRate),d=buf.getChannelData(0);
+  for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
+  const s=ac.createBufferSource();s.buffer=buf;
+  const f=ac.createBiquadFilter();f.type='highpass';f.frequency.value=7000;
+  const g=ac.createGain();g.gain.setValueAtTime(open?.22:.15,ac.currentTime);
+  g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+len);
+  s.connect(f);f.connect(g);g.connect(ac.destination);s.start();
+}
+function snare(){
+  const buf=ac.createBuffer(1,ac.sampleRate*.11,ac.sampleRate),d=buf.getChannelData(0);
+  for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
+  const s=ac.createBufferSource();s.buffer=buf;
+  const f=ac.createBiquadFilter();f.type='bandpass';f.frequency.value=1800;
+  const g=ac.createGain();g.gain.setValueAtTime(.4,ac.currentTime);
+  g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.11);
+  s.connect(f);f.connect(g);g.connect(ac.destination);s.start();
+}
+function bassNote(fr){
+  const o=ac.createOscillator(),g=ac.createGain();
+  o.type='sawtooth';o.frequency.value=fr;
+  const f=ac.createBiquadFilter();f.type='lowpass';f.frequency.value=600;
+  g.gain.setValueAtTime(.16,ac.currentTime);
+  g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.2);
+  o.connect(f);f.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+.21);
+}
+let lastActivity=0,watchdog=null;
+function bumpActivity(){lastActivity=performance.now()}
+function toggleMetro(mode){
+  if(metroMode===mode){stopMetro();return}
+  stopMetro();ensureAC();metroMode=mode;bumpActivity();
+  if(!watchdog)watchdog=setInterval(()=>{
+    if(metroMode&&performance.now()-lastActivity>5000)stopMetro();
+  },1000);
+  if(mode==='click'){
+    click880(.25);
+    metroTimer=setInterval(()=>click880(.25),60000/110);
+    document.getElementById('metroBtn').textContent='🔇 คลิก ⏸';
+  }else{
+    /* disco groove 120 bpm: 8th-note scheduler
+       kick ทุกจังหวะ (four-on-the-floor), hi-hat เปิดจังหวะยก, snare จังหวะ 2&4, เบสสลับโน้ต */
+    const eighth=60000/120/2; let step=0;
+    const bass=[98,98,110,98, 98,98,110,123]; /* original disco bassline (not the song's melody) */
+    const play=()=>{
+      const inBeat=step%2===0, beatNo=Math.floor(step/2)%4;
+      if(inBeat){kick();bassNote(bass[Math.floor(step/2)%8]);
+        if(beatNo===1||beatNo===3)snare();
+        hat(false);
+      }else hat(true);
+      step++;
+    };
+    play();metroTimer=setInterval(play,eighth);
+    document.getElementById('discoBtn').textContent='🔇 ดิสโก้ ⏸';
+  }
+}
+</script>
+</body>
+</html>
